@@ -6,6 +6,7 @@ import { ZulipClient } from './zulip-client.js';
 import { registerMessageTools } from './tools/message-tools.js';
 import { registerStreamTools } from './tools/stream-tools.js';
 import { registerReactionTools } from './tools/reaction-tools.js';
+import { registerUserTools } from './tools/user-tools.js';
 import { registerStreamResources } from './resources/stream-resources.js';
 import { registerUserResources } from './resources/user-resources.js';
 
@@ -32,6 +33,7 @@ async function main(): Promise<void> {
   registerMessageTools(server, client);
   registerStreamTools(server, client);
   registerReactionTools(server, client);
+  registerUserTools(server, client);
 
   // Register resources
   registerStreamResources(server, client);
