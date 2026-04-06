@@ -5,7 +5,7 @@ An [MCP (Model Context Protocol)](https://modelcontextprotocol.io) server for [Z
 ## Features
 
 - **Send & manage messages** — stream messages, direct messages, edit, delete
-- **Search messages** — by stream, topic, sender, or keyword
+- **Search messages** — by stream, topic, sender, keyword, or unread status (`is:unread`)
 - **Read direct messages** — list all DMs or fetch a conversation with a specific user
 - **Stream management** — subscribe, unsubscribe, create streams, list topics
 - **Reactions & flags** — add/remove emoji reactions, mark messages read, update flags
@@ -21,7 +21,7 @@ An [MCP (Model Context Protocol)](https://modelcontextprotocol.io) server for [Z
 | `zulip_update_message` | Edit a message or move it to another topic |
 | `zulip_delete_message` | Delete a message |
 | `zulip_get_message` | Fetch a single message by ID |
-| `zulip_search_messages` | Search messages by stream, topic, sender, or keyword |
+| `zulip_search_messages` | Search messages by stream, topic, sender, keyword, or unread status |
 | `zulip_subscribe_to_stream` | Subscribe to a stream (creates it if needed) |
 | `zulip_unsubscribe_from_stream` | Unsubscribe from a stream |
 | `zulip_create_stream` | Create a new stream |

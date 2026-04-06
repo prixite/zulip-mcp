@@ -247,17 +247,21 @@ export function registerMessageTools(server: McpServer, client: ZulipClient): vo
     'zulip_search_messages',
     {
       title: 'Search Messages',
-      description: 'Search and retrieve messages with optional filters for stream, topic, sender, and keyword',
+      description: 'Search and retrieve messages with optional filters for stream, topic, sender, keyword, and unread status',
       inputSchema: {
         query: z.string().optional().describe('Keyword search query'),
         stream: z.string().optional().describe('Filter by stream name'),
         topic: z.string().optional().describe('Filter by topic name (requires stream)'),
         sender: z.string().optional().describe('Filter by sender email'),
+        unread: z
+          .boolean()
+          .optional()
+          .describe('If true, return only unread messages. Defaults anchor to "first_unread" when set.'),
         anchor: z
           .string()
           .optional()
           .default('newest')
-          .describe('Message ID to anchor search at, or "newest" / "oldest"'),
+          .describe('Message ID to anchor search at, or "newest" / "oldest" / "first_unread"'),
         num_before: z
           .number()
           .int()
@@ -276,17 +280,20 @@ export function registerMessageTools(server: McpServer, client: ZulipClient): vo
           .describe('Number of messages after anchor to fetch'),
       },
     },
-    async ({ query, stream, topic, sender, anchor, num_before, num_after }) => {
+    async ({ query, stream, topic, sender, unread, anchor, num_before, num_after }) => {
       try {
         const narrow: Array<{ operator: string; operand: string }> = [];
         if (stream) narrow.push({ operator: 'stream', operand: stream });
         if (topic) narrow.push({ operator: 'topic', operand: topic });
         if (sender) narrow.push({ operator: 'sender', operand: sender });
+        if (unread) narrow.push({ operator: 'is', operand: 'unread' });
         if (query) narrow.push({ operator: 'search', operand: query });
+
+        const resolvedAnchor = anchor ?? (unread ? 'first_unread' : 'newest');
 
         const messages = await client.retrieveMessages({
           narrow: narrow as Parameters<typeof client.retrieveMessages>[0]['narrow'],
-          anchor: anchor ?? 'newest',
+          anchor: resolvedAnchor,
           numBefore: num_before ?? 20,
           numAfter: num_after ?? 0,
         });
