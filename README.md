@@ -25,6 +25,7 @@ An [MCP (Model Context Protocol)](https://modelcontextprotocol.io) server for [Z
 | `zulip_subscribe_to_stream` | Subscribe to a stream (creates it if needed) |
 | `zulip_unsubscribe_from_stream` | Unsubscribe from a stream |
 | `zulip_create_stream` | Create a new stream |
+| `zulip_list_streams` | List subscribed or all public streams |
 | `zulip_get_stream_topics` | List topics in a stream |
 | `zulip_add_reaction` | Add an emoji reaction to a message |
 | `zulip_remove_reaction` | Remove an emoji reaction |

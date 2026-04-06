@@ -141,6 +141,71 @@ export function registerStreamTools(server: McpServer, client: ZulipClient): voi
     }
   );
 
+  // ─── List Streams ─────────────────────────────────────────────────────────
+  server.registerTool(
+    'zulip_list_streams',
+    {
+      title: 'List Streams',
+      description: 'List Zulip streams. By default returns only subscribed streams. Can also return all public streams.',
+      inputSchema: {
+        subscribed_only: z
+          .boolean()
+          .optional()
+          .default(true)
+          .describe('Only return streams you are subscribed to. Default: true'),
+        include_archived: z
+          .boolean()
+          .optional()
+          .default(false)
+          .describe('Include archived streams. Default: false'),
+      },
+    },
+    async ({ subscribed_only, include_archived }) => {
+      try {
+        const subscribedOnly = subscribed_only ?? true;
+        const includeArchived = include_archived ?? false;
+
+        let streams: import('../types.js').ZulipStream[];
+        if (subscribedOnly) {
+          streams = await client.retrieveSubscriptions();
+        } else {
+          streams = await client.retrieveStreams(true, true);
+        }
+
+        if (!includeArchived) {
+          streams = streams.filter(s => !s.is_archived);
+        }
+
+        const formatted = streams
+          .map(s => ({
+            stream_id: s.stream_id,
+            name: s.name,
+            description: s.description,
+            invite_only: s.invite_only,
+            is_archived: s.is_archived,
+            is_web_public: s.is_web_public,
+          }))
+          .sort((a, b) => a.name.localeCompare(b.name));
+
+        return {
+          content: [
+            {
+              type: 'text' as const,
+              text: formatted.length === 0
+                ? 'No streams found'
+                : JSON.stringify(formatted, null, 2),
+            },
+          ],
+        };
+      } catch (err) {
+        return {
+          content: [{ type: 'text' as const, text: formatError(err) }],
+          isError: true,
+        };
+      }
+    }
+  );
+
   // ─── Get Stream Topics ────────────────────────────────────────────────────
   server.registerTool(
     'zulip_get_stream_topics',
