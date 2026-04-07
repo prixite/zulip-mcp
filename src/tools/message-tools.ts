@@ -25,7 +25,7 @@ export function registerMessageTools(server: McpServer, client: ZulipClient): vo
     },
     async ({ stream, topic, content }) => {
       try {
-        const result = await client.sendMessage({ type: 'stream', to: stream, content: `Claude Code: ${content}`, topic });
+        const result = await client.sendMessage({ type: 'stream', to: stream, content: `${content}\n\nSent using Claude Code.`, topic });
         return {
           content: [{ type: 'text' as const, text: `Message sent successfully. Message ID: ${result.id}` }],
         };
@@ -54,7 +54,7 @@ export function registerMessageTools(server: McpServer, client: ZulipClient): vo
     async ({ to, content }) => {
       try {
         const recipients = Array.isArray(to) ? to : [to];
-        const result = await client.sendMessage({ type: 'direct', to: recipients, content: `Claude Code: ${content}` });
+        const result = await client.sendMessage({ type: 'direct', to: recipients, content: `${content}\n\nSent using Claude Code.` });
         return {
           content: [{ type: 'text' as const, text: `Direct message sent successfully. Message ID: ${result.id}` }],
         };
