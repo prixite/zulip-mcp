@@ -249,7 +249,7 @@ export function registerMessageTools(server: McpServer, client: ZulipClient): vo
       title: 'Search Messages',
       description: 'Search and retrieve messages with optional filters for stream, topic, sender, keyword, and unread status',
       inputSchema: {
-        query: z.string().optional().describe('Keyword search query'),
+        query: z.string().optional().describe('Content keyword search (searches message text — do NOT pass Zulip narrow syntax like "is:unread" here)'),
         stream: z.string().optional().describe('Filter by stream name'),
         topic: z.string().optional().describe('Filter by topic name (requires stream)'),
         sender: z.string().optional().describe('Filter by sender email'),
